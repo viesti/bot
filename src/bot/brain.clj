@@ -17,7 +17,7 @@
                    (>= ty 0)
                    (<= tx width)
                    (<= ty height)
-                   (or (= (- x tx) 0) (= (- y ty) 0))
+                   (or (zero? (- x tx)) (zero? (- y ty)))
                    (not= [x y] [tx ty])
                    (not= (nth (nth map ty) tx) \x)
                    (not (contains? closed [tx ty]))
@@ -78,16 +78,19 @@
             [0 0 0 0 0 0 0]])
 
 (defn next-move [{:keys [gameState playerState] :as state}]
-  (let [tile-map (map #(mapv identity  %) (get-in gameState [:map :tiles]))
+  (let [tile-map (mapv vec (get-in gameState [:map :tiles]))
+        _ (println tile-map)
         exit (get-in gameState [:map :exit])
         {:keys [position]} playerState
         my-x (:x position)
         my-y (:y position)
-        first-step (first (search tile-map [my-x my-y] [(:x exit) (:y exit)]))
+        _ (println my-x my-y exit)
+        first-step (second (search tile-map [my-x my-y] [(:x exit) (:y exit)]))
+        _ (println first-step)
         x (first first-step)
         y (second first-step)
-        tx (- my-x x)
-        ty (- my-y y)]
+        tx (- x my-x)
+        ty (- y my-y)]
     (if (= tx 0)
       (if (< ty 0)
         "UP"

@@ -3,14 +3,15 @@
             [org.httpkit.server :refer [run-server]]
             [cheshire.core :as json]
             [bot.brain :as brain]
+            [bot.client]
             [clojure.pprint :refer [pprint]]))
 
 (defn handler [request]
-  (println "moi")
+  (println "Request")
   (when-let [body (:body request)]
     (let [state (json/parse-string (slurp body) true)
-          _ (pprint state)
           move (brain/next-move state)]
+      (pprint move)
       {:status 200
        :headers {"Content-Type" "application/json"}
        :body (json/generate-string move)})))
