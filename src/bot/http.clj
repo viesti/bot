@@ -11,7 +11,7 @@
   (start [this]
     (if (:stop-fn this)
       this
-      (assoc this :stop-fn (run-server app {:port 8282}))))
+      (assoc this :stop-fn (run-server app {:port 8080}))))
   (stop [{:keys [stop-fn] :as this}]
     (when stop-fn
       (stop-fn))
