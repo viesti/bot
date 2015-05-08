@@ -140,7 +140,7 @@
       (do
         (pprint state)
         (pprint my-coords)
-        (let [first-step (java-a* (get-in gameState [:map :tiles]) my-x my-y (:x exit) (:y exit))
+        (let [first-step (first (java-a* (get-in gameState [:map :tiles]) my-x my-y (first target) (second target)))
               x (first first-step)
               y (second first-step)
               tx (- x my-x)
