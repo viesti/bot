@@ -1,7 +1,8 @@
 (ns bot.brain
   (:require [clojure.data.priority-map :as priority-map]
-            [clojure.pprint :refer [pprint]]))
-
+            [clojure.pprint :refer [pprint]])
+  (:import [CDIO.pathFinder AreaMap AStar Path]
+           [CDIO.pathFinder.heuristics AStarHeuristic DiagonalHeuristic]))
 
 (defn manhattan-distance [[x1 y1] [x2 y2]]
   (+ (Math/abs ^Integer (- x2 x1)) (Math/abs ^Integer (- y2 y1))))
@@ -19,11 +20,10 @@
                    (>= ty 0)
                    (<= tx width)
                    (<= ty height)
-                   (or (zero? (- x tx)) (zero? (- y ty)))
+                   #_(or (zero? (- x tx)) (zero? (- y ty)))
                    (not= [x y] [tx ty])
                    (not= (nth (nth map ty) tx) \x)
-                   (not (contains? closed [tx ty]))
-                   )]
+                   (not (contains? closed [tx ty])))]
     [tx ty]))
 
 (defn path [end parent closed]
@@ -33,6 +33,8 @@
       (if (nil? node)
         path
         (recur (conj path node) (closed node))))))
+
+(def foo (atom 0))
 
 (defn search
   ([map start end]
@@ -111,6 +113,18 @@
          first
          get-coordinates)))
 
+(defn obstacles [tiles]
+  (into-array (map (fn [row]
+                     (into-array Integer/TYPE (map #(if (= % \x) 1 0) row)))
+                   tiles)))
+
+(defn java-a* [tiles sx sy tx ty]
+  (let [area (AreaMap. (count (first tiles)) (count tiles) (obstacles tiles) #_(make-array Integer/TYPE w h))
+        heuristic (DiagonalHeuristic.)
+        astar (AStar. area heuristic)
+        path (.calcShortestPath astar sx sy tx ty)]
+    (map (fn [p] [(.x p) (.y p)]) path)))
+
 (defn next-move [{:keys [gameState playerState] :as state}]
   (let [tile-map (mapv vec (get-in gameState [:map :tiles]))
         exit (get-in gameState [:map :exit])
@@ -126,7 +140,7 @@
       (do
         (pprint state)
         (pprint my-coords)
-        (let [first-step (calculate-move tile-map my-coords target)
+        (let [first-step (java-a* (get-in gameState [:map :tiles]) my-x my-y (:x exit) (:y exit))
               x (first first-step)
               y (second first-step)
               tx (- x my-x)

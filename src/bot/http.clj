@@ -20,6 +20,6 @@
                {:status 500
                 :body "FUBAR"})))))
 
-(defn start! []
+(defn start! [port]
   (println "Starting bot")
-  (run-server handler {:port 8080}))
+  (run-server handler {:port port}))

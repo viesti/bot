@@ -13,10 +13,10 @@
 (defn message-url [id]
   (str "http://" server-address "/" id "/say"))
 
-(defn register-bot []
+(defn register-bot [port]
   (let [my-ip (first (first (ip-tools/ips)))
         registration {:playerName "Pääkonttori"
-                      :url (str "http://" my-ip ":8080/move")}
+                      :url (str "http://" my-ip ":" port "/move")}
         response @(http/post register-url {:headers {"Content-Type" "application/json"}
                                            :body (json/generate-string registration)})]
     (when (= 200 (:status response))

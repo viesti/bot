@@ -8,6 +8,7 @@
                  [compojure "1.3.3"]
                  [cheshire "5.4.0"]
                  [org.clojure/data.priority-map "0.0.7"]]
+  :java-source-paths ["java"]
   :target-path "target/%s"
   :repl-options {:init-ns user}
   :profiles {:uberjar {:aot :all}
