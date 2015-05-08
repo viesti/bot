@@ -109,7 +109,7 @@
                                  (assoc item :distance (manhattan-distance my-pos [(:x item-pos) (:y item-pos)])))) items)]
     (->> items-with-dist
          (sort-by :distance)
-         (remove #(< money (* (:price %) (:discountPercent %) 0.01)))
+         (remove #(< money (* (:price %) (- 100 (:discountPercent %) 0.01))))
          first
          get-coordinates)))
 
