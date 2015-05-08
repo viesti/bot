@@ -16,10 +16,6 @@
        :headers {"Content-Type" "application/json"}
        :body (json/generate-string move)})))
 
-(defn runner [x]
-  (@(var handler) x))
-
-(defonce stop-fn (atom nil))
-
 (defn start! []
-  (reset! stop-fn (run-server runner {:port 8080})))
+  (println "Starting bot")
+  (run-server handler {:port 8080}))
