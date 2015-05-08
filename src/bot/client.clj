@@ -4,7 +4,7 @@
             [cheshire.core :as json]
             [clojure.pprint :refer [pprint]]))
 
-(def server-address "192.168.2.86")
+(def server-address "192.168.2.85")
 
 (def state (atom {}))
 

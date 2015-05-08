@@ -9,13 +9,16 @@
 (defn handler [request]
   (println "Request")
   (when-let [body (:body request)]
-    (let [state (json/parse-string (slurp body) true)
-          move (brain/next-move state)]
-      (pprint state)
-      (pprint move)
-      {:status 200
-       :headers {"Content-Type" "application/json"}
-       :body (json/generate-string move)})))
+    (try (let [state (json/parse-string (slurp body) true)
+               move (brain/next-move state)]
+           (pprint move)
+           {:status 200
+            :headers {"Content-Type" "application/json"}
+            :body (json/generate-string move)})
+         (catch Exception e
+           (do (pprint e)
+               {:status 500
+                :body "FUBAR"})))))
 
 (defn start! []
   (println "Starting bot")

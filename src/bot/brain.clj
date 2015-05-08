@@ -2,6 +2,7 @@
   (:require [clojure.data.priority-map :as priority-map]
             [clojure.pprint :refer [pprint]]))
 
+
 (defn manhattan-distance [[x1 y1] [x2 y2]]
   (+ (Math/abs ^Integer (- x2 x1)) (Math/abs ^Integer (- y2 y1))))
 
@@ -78,6 +79,21 @@
             [0 0 0 \x 0 0 0]
             [0 0 0 0 0 0 0]])
 
+(defn available? [board [x y]]
+  (not= \x (nth (nth board y) x)))
+
+(defn calculate-move [board [x y] [tx ty]]
+  (let [x-dir (Integer/signum (- tx x))
+        y-dir (Integer/signum (- ty y))]
+    (let [next-x [(+ x x-dir) y]
+          next-y (if (not (zero? x-dir))
+                   (if (< y (/ (count board) 2))
+                     [x (dec y)]
+                     [x (inc y)])
+                   [x (+ y y-dir)])
+          next (if (or (zero? x-dir) (not (available? board next-x))) next-y next-x)]
+      next)))
+
 (defn get-coordinates [item]
   (when item
     (let [x (get-in item [:position :x])
@@ -85,7 +101,6 @@
       [x y])))
 
 (defn select-target [items money my-pos]
-  (pprint items)
   (pprint money)
   (let [items-with-dist (map (fn [item]
                                (let [item-pos (:position item)]
@@ -108,15 +123,18 @@
     (pprint target)
     (if (= my-coords target)
       "PICK"
-      (let [first-step (second (search tile-map my-coords target))
-            x (first first-step)
-            y (second first-step)
-            tx (- x my-x)
-            ty (- y my-y)]
-        (if (= tx 0)
-          (if (< ty 0)
-            "UP"
-            "DOWN")
-          (if (< tx 0)
-            "LEFT"
-            "RIGHT"))))))
+      (do
+        (pprint state)
+        (pprint my-coords)
+        (let [first-step (calculate-move tile-map my-coords target)
+              x (first first-step)
+              y (second first-step)
+              tx (- x my-x)
+              ty (- y my-y)]
+          (if (= tx 0)
+            (if (< ty 0)
+              "UP"
+              "DOWN")
+            (if (< tx 0)
+              "LEFT"
+              "RIGHT")))))))
