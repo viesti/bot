@@ -13,7 +13,7 @@
   (str "http://" server-address "/" id "/say"))
 
 (defn register-bot []
-  (let [my-ip (first (first(ip-tools/ips)))
+  (let [my-ip (first (first (ip-tools/ips)))
         registration {:playerName "Pääkonttori"
                       :url (str "http://" my-ip ":8080/move")}
         response @(http/post register-url {:headers {"Content-Type" "application/json"}

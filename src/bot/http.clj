@@ -3,8 +3,10 @@
             [org.httpkit.server :refer [run-server]]))
 
 (defn handler [request]
+  (clojure.pprint/pprint request)
   {:status 200
-   :body "foo"})
+   :headers {"Content-Type" "application/json"}
+   :body (rand-nth ["UP" "DOWN" "LEFT" "RIGHT"])})
 
 (defn runner [x]
   (@(var handler) x))
