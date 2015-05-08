@@ -10,5 +10,6 @@
   :target-path "target/%s"
   :repl-options {:init-ns user}
   :profiles {:uberjar {:aot :all}
-             :dev {:dependencies [[reloaded.repl "0.1.0"]]
+             :dev {:dependencies [[reloaded.repl "0.1.0"]
+                                  [org.clojure/tools.nrepl "0.2.10"]]
                    :source-paths ["dev"]}})
