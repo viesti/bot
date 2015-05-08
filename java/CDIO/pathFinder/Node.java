@@ -43,28 +43,28 @@ public class Node implements Comparable<Node> {
 		ArrayList<Node> neighborList = new ArrayList<Node>();
 		if (!(y==0)) {
 			neighborList.add(map.getNode(x, (y-1)));
-		}
+		}/*
 		if (!(y==0) && !(x==(map.getMapWith()-1))) {
 			neighborList.add(map.getNode(x+1,y-1));
-		}
+		}*/
 		if (!(x==(map.getMapWith()-1))) {
 			neighborList.add(map.getNode(x+1,y));
-		}
+		}/*
 		if (!(x==(map.getMapWith()-1)) && !(y==(map.getMapHeight()-1))) {
 			neighborList.add(map.getNode(x+1,y+1));
-		}
+		}*/
 		if (!(y==(map.getMapHeight()-1))) {
 			neighborList.add(map.getNode(x,y+1));
-		}
+		}/*
 		if (!(x==0) && !(y==(map.getMapHeight()-1))) {
 			neighborList.add(map.getNode(x-1,y+1));
-		}
+		}*/
 		if (!(x==0)) {
 			neighborList.add(map.getNode(x-1,y));
-		}
+		}/*
 		if (!(x==0) && !(y==0)) {
 			neighborList.add(map.getNode(x-1,y-1));
-		}
+		}*/
 		return neighborList;
 	}
 

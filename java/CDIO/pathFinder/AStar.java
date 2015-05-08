@@ -26,11 +26,6 @@ public class AStar {
 	}
 
 	public ArrayList<Point> calcShortestPath(int startX, int startY, int goalX, int goalY) {
-		//this.startX = startX;
-		//this.startY = startY;
-		//this.goalX = goalX;
-		//this.goalY = goalY;
-
 		//mark start and goal node
 		map.setStartLocation(startX, startY);
 		map.setGoalLocation(goalX, goalY);
