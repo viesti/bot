@@ -10,7 +10,7 @@
                  [org.clojure/data.priority-map "0.0.7"]]
   :java-source-paths ["java"]
   :target-path "target/%s"
-  :repl-options {:init-ns user}
+  :repl-options {:init-ns dev}
   :profiles {:uberjar {:aot :all}
              :dev {:dependencies [[org.clojure/tools.namespace "0.2.10"]
                                   [org.clojure/tools.nrepl "0.2.10"]]

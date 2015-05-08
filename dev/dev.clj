@@ -1,9 +1,9 @@
-(ns user
+(ns dev
   (:require [bot.http :as http]
             [bot.client :refer [send-message] :as client]
             [clojure.tools.namespace.repl :refer [disable-reload! refresh]]))
 
-(def port 8080)
+(def port 8081)
 
 (def stop-fn (atom nil))
 
@@ -13,7 +13,7 @@
   (when @stop-fn
     (println "Stopping")
     (@stop-fn))
-  (refresh :after 'user/start!))
+  (refresh :after 'dev/start!))
 
 (defn register-bot []
   (client/register-bot port))
