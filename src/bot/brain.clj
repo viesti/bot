@@ -115,7 +115,7 @@
 
 (defn obstacles [tiles]
   (into-array (map (fn [row]
-                     (into-array Integer/TYPE (map #(if (= % \x) 1 0) row)))
+                     (into-array Integer/TYPE (map #(if (or (= % \x) (= % \#)) 1 0) row)))
                    tiles)))
 
 (defn java-a* [tiles sx sy tx ty]
