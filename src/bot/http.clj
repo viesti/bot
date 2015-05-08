@@ -1,12 +1,19 @@
 (ns bot.http
   (:require [compojure.core :refer :all]
-            [org.httpkit.server :refer [run-server]]))
+            [org.httpkit.server :refer [run-server]]
+            [cheshire.core :as json]
+            [bot.brain :as brain]
+            [clojure.pprint :refer [pprint]]))
 
 (defn handler [request]
-  (clojure.pprint/pprint request)
-  {:status 200
-   :headers {"Content-Type" "application/json"}
-   :body (rand-nth ["UP" "DOWN" "LEFT" "RIGHT"])})
+  (println "moi")
+  (when-let [body (:body request)]
+    (let [state (json/parse-string (slurp body) true)
+          _ (pprint state)
+          move (brain/next-move state)]
+      {:status 200
+       :headers {"Content-Type" "application/json"}
+       :body (json/generate-string move)})))
 
 (defn runner [x]
   (@(var handler) x))

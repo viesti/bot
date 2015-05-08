@@ -17,9 +17,11 @@
                    (>= ty 0)
                    (<= tx width)
                    (<= ty height)
+                   (or (= (- x tx) 0) (= (- y ty) 0))
                    (not= [x y] [tx ty])
-                   (not= (nth (nth map ty) tx) 'x')
-                   (not (contains? closed [tx ty])))]
+                   (not= (nth (nth map ty) tx) \x)
+                   (not (contains? closed [tx ty]))
+                   )]
     [tx ty]))
 
 (defn path [end parent closed]
@@ -70,7 +72,26 @@
        (path end parent closed)))))
 
 (def maze1 [[0 0 0 0 0 0 0]
-            [0 0 0 'x' 0 0 0]
-            [0 0 0 'x' 0 0 0]
-            [0 0 0 'x' 0 0 0]
+            [0 0 0 \x 0 0 0]
+            [0 0 0 \x 0 0 0]
+            [0 0 0 \x 0 0 0]
             [0 0 0 0 0 0 0]])
+
+(defn next-move [{:keys [gameState playerState] :as state}]
+  (let [tile-map (map #(mapv identity  %) (get-in gameState [:map :tiles]))
+        exit (get-in gameState [:map :exit])
+        {:keys [position]} playerState
+        my-x (:x position)
+        my-y (:y position)
+        first-step (first (search tile-map [my-x my-y] [(:x exit) (:y exit)]))
+        x (first first-step)
+        y (second first-step)
+        tx (- my-x x)
+        ty (- my-y y)]
+    (if (= tx 0)
+      (if (< ty 0)
+        "UP"
+        "DOWN")
+      (if (< tx 0)
+        "LEFT"
+        "RIGHT"))))
