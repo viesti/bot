@@ -6,7 +6,8 @@
   :dependencies [[org.clojure/clojure "1.7.0-beta2"]
                  [http-kit "2.1.18"]
                  [compojure "1.3.3"]
-                 [com.stuartsierra/component "0.2.3"]]
+                 [com.stuartsierra/component "0.2.3"]
+                 [cheshire "5.4.0"]]
   :target-path "target/%s"
   :repl-options {:init-ns user}
   :profiles {:uberjar {:aot :all}
