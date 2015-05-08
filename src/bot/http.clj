@@ -1,20 +1,15 @@
 (ns bot.http
-  (:require [com.stuartsierra.component :as component]
-            [compojure.core :refer :all]
+  (:require [compojure.core :refer :all]
             [org.httpkit.server :refer [run-server]]))
 
-(defroutes app
-  (GET "/" [] "Hello World"))
+(defn handler [request]
+  {:status 200
+   :body "foo"})
 
-(defrecord HttpServer []
-  component/Lifecycle
-  (start [this]
-    (if (:stop-fn this)
-      this
-      (assoc this :stop-fn (run-server app {:port 8080}))))
-  (stop [{:keys [stop-fn] :as this}]
-    (when stop-fn
-      (stop-fn))
-    (assoc this :stop-fn nil)))
+(defn runner [x]
+  (@(var handler) x))
 
+(defonce stop-fn (atom nil))
 
+(defn start! []
+  (reset! stop-fn (run-server runner {:port 8080})))

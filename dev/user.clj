@@ -1,5 +1,8 @@
 (ns user
-  (:require [reloaded.repl :refer [system init start stop go reset]]
-            [bot.http :as http]))
+  (:require [bot.http :as http]
+            [clojure.tools.namespace.repl :refer [disable-reload! refresh]]))
 
-(reloaded.repl/set-init! #(http/->HttpServer))
+(disable-reload!)
+
+(defn start! []
+  (http/start!))
