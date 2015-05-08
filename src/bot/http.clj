@@ -11,6 +11,7 @@
   (when-let [body (:body request)]
     (let [state (json/parse-string (slurp body) true)
           move (brain/next-move state)]
+      (pprint state)
       (pprint move)
       {:status 200
        :headers {"Content-Type" "application/json"}

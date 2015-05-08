@@ -1,5 +1,6 @@
 (ns bot.brain
-  (:require [clojure.data.priority-map :as priority-map]))
+  (:require [clojure.data.priority-map :as priority-map]
+            [clojure.pprint :refer [pprint]]))
 
 (defn manhattan-distance [[x1 y1] [x2 y2]]
   (+ (Math/abs ^Integer (- x2 x1)) (Math/abs ^Integer (- y2 y1))))
@@ -77,24 +78,45 @@
             [0 0 0 \x 0 0 0]
             [0 0 0 0 0 0 0]])
 
+(defn get-coordinates [item]
+  (when item
+    (let [x (get-in item [:position :x])
+          y (get-in item [:position :y])]
+      [x y])))
+
+(defn select-target [items money my-pos]
+  (pprint items)
+  (pprint money)
+  (let [items-with-dist (map (fn [item]
+                               (let [item-pos (:position item)]
+                                 (assoc item :distance (manhattan-distance my-pos [(:x item-pos) (:y item-pos)])))) items)]
+    (->> items-with-dist
+         (sort-by :distance)
+         (remove #(< money (* (:price %) (:discountPercent %) 0.01)))
+         first
+         get-coordinates)))
+
 (defn next-move [{:keys [gameState playerState] :as state}]
   (let [tile-map (mapv vec (get-in gameState [:map :tiles]))
-        _ (println tile-map)
         exit (get-in gameState [:map :exit])
-        {:keys [position]} playerState
+        items (:items gameState)
+        {:keys [position money]} playerState
         my-x (:x position)
         my-y (:y position)
-        _ (println my-x my-y exit)
-        first-step (second (search tile-map [my-x my-y] [(:x exit) (:y exit)]))
-        _ (println first-step)
-        x (first first-step)
-        y (second first-step)
-        tx (- x my-x)
-        ty (- y my-y)]
-    (if (= tx 0)
-      (if (< ty 0)
-        "UP"
-        "DOWN")
-      (if (< tx 0)
-        "LEFT"
-        "RIGHT"))))
+        my-coords [my-x my-y]
+        target (or (select-target items money my-coords) [(:x exit) (:y exit)])]
+    (pprint target)
+    (if (= my-coords target)
+      "PICK"
+      (let [first-step (second (search tile-map my-coords target))
+            x (first first-step)
+            y (second first-step)
+            tx (- x my-x)
+            ty (- y my-y)]
+        (if (= tx 0)
+          (if (< ty 0)
+            "UP"
+            "DOWN")
+          (if (< tx 0)
+            "LEFT"
+            "RIGHT"))))))
