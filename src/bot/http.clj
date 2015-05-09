@@ -2,15 +2,19 @@
   (:require [compojure.core :refer :all]
             [org.httpkit.server :refer [run-server]]
             [cheshire.core :as json]
-            [bot.brain :as brain]
-            [bot.client]
-            [clojure.pprint :refer [pprint]]))
+            bot.brain
+            [clojure.pprint :refer [pprint]]
+            [clojure.tools.namespace.repl :refer [disable-unload!]]))
+
+;; This prevents from loosing the Var instance passed to run-server
+;; while getting reloaded with c.t.n.repl/refresh
+(disable-unload!)
 
 (defn handler [request]
   (println "Request")
   (when-let [body (:body request)]
     (try (let [state (json/parse-string (slurp body) true)
-               move (brain/next-move state)]
+               move (bot.brain/next-move state)]
            (pprint move)
            {:status 200
             :headers {"Content-Type" "application/json"}
@@ -22,4 +26,4 @@
 
 (defn start! [port]
   (println "Starting bot")
-  (run-server handler {:port port}))
+  (run-server #'handler {:port port}))
